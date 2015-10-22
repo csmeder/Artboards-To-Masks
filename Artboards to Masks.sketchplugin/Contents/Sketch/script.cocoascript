@@ -1,0 +1,66 @@
+// Duplicate page
+var duplicatePage = function(context) {
+  log("duplicate page"))
+  var doc = context.document
+  var page = [doc currentPage]
+  var newPage = [page copy]
+  newPage.setName("Zeplin") 
+  [[doc documentData] addPage:newPage]
+ // [doc setCurrentPage:newPage]  
+}
+
+
+var onRun = function(context) {
+  var selection = selection || context.selection
+
+  // Mask each artboard
+  for (var i=0; i<selection.count(); i++) {
+    var artboard = selection.objectAtIndex(i)
+    var layers = artboard.layers()
+    //log("artboard  = " + artboard.name())
+
+  
+    // Build the Mask 
+    var mask = [artboard addLayerOfType:"rectangle"]
+    mask.setName("mask")
+ 
+    var frame = [mask frame]
+    frame.setWidth(artboard.frame().width()) 
+    frame.setHeight(artboard.frame().height())
+
+    var color = mask.style().fills().addNewStylePart().color()
+
+    color.setRed(artboard.backgroundColor().red());
+    color.setGreen(artboard.backgroundColor().green());
+    color.setBlue(artboard.backgroundColor().blue());
+  
+    mask.frame().x = 0
+    mask.frame().y = 0
+
+    // Group the Mask
+    newGroup = MSLayerGroup.new();
+    newGroup.setName("screen")
+
+    mask.removeFromParent();
+    newGroup.addLayers([mask]);
+
+    // Move each layer into the Screen group 
+    layersCount = layers.count()
+    for (var j = 0; j < layersCount; j++) {
+  	var layer = layers.objectAtIndex(0)
+	
+        layer.removeFromParent()
+        newGroup.addLayers([layer])
+
+    }
+    newGroup.removeFromParent()
+    artboard.parentGroup().addLayers([newGroup])
+    newGroup.frame().x = artboard.frame().x()
+    newGroup.frame().y = artboard.frame().y()
+    artboard.removeFromParent();
+
+    mask.setHasClippingMask(true)
+  }  
+};
+
+*/
