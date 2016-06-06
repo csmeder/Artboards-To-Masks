@@ -6,7 +6,10 @@
   var newPage = [page copy]
   newPage.setName("Zeplin")
   [[doc documentData] addPage:newPage]
- // [doc setCurrentPage:newPage]
+  //doc.sidebarController().pagesViewController().reloadData()
+  //[doc setCurrentPage:newPage]
+   //view = doc.currentView()
+   //view.refresh()
 }
 
 
@@ -24,9 +27,7 @@ var onRun = function(context) {
     var mask = [artboard addLayerOfType:"rectangle"]
     mask.setName("mask")
 
-    var frame = [mask frame]
-    frame.setWidth(artboard.frame().width())
-    frame.setHeight(artboard.frame().height())
+    setSize(mask,artboard.frame().width(),artboard.frame().height());
 
     var color = mask.style().fills().addNewStylePart().color()
 
@@ -58,6 +59,18 @@ var onRun = function(context) {
     newGroup.frame().y = artboard.frame().y()
     artboard.removeFromParent();
 
+    //findLargestArtboard().addLayers([artboard])
     mask.setHasClippingMask(true)
   }
 };
+
+function setSize(layer,width,height) {
+  var frame = layer.rect();
+  frame.size.width = width;
+  frame.size.height = height;
+  layer.rect = frame;
+}
+
+function findLargestArtboard() {
+
+}
