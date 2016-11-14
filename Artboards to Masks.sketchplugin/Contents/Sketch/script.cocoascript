@@ -1,18 +1,3 @@
-// Duplicate page
-  var duplicatePage = function(context) {
-  log("duplicate page"))
-  var doc = context.document
-  var page = [doc currentPage]
-  var newPage = [page copy]
-  newPage.setName("Zeplin")
-  [[doc documentData] addPage:newPage]
-  //doc.sidebarController().pagesViewController().reloadData()
-  //[doc setCurrentPage:newPage]
-   //view = doc.currentView()
-   //view.refresh()
-}
-
-
 var onRun = function(context) {
   var selection = selection || context.selection
 
@@ -20,57 +5,50 @@ var onRun = function(context) {
   for (var i=0; i<selection.count(); i++) {
     var artboard = selection.objectAtIndex(i)
     var layers = artboard.layers()
-    //log("artboard  = " + artboard.name())
-
 
     // Build the Mask
-    var mask = [artboard addLayerOfType:"rectangle"]
+    var path = NSBezierPath.bezierPath()
+    path.moveToPoint(NSMakePoint(0,0))
+    path.lineToPoint(NSMakePoint(artboard.frame().width(), 0))
+    path.lineToPoint(NSMakePoint(artboard.frame().width(),artboard.frame().height()))
+    path.lineToPoint(NSMakePoint(0,artboard.frame().height()))
+    path.closePath()
+
+    var mask = MSShapeGroup.shapeWithBezierPath(path)
+    
+    // Group the Mask
+    newGroup = MSLayerGroup.new()
+    newGroup.setName("screen")
+    newGroup.addLayer(mask)
+
     mask.setName("mask")
 
-    setSize(mask,artboard.frame().width(),artboard.frame().height());
+    var bgColor = MSColor.alloc().init()
+    bgColor.setRed(artboard.backgroundColor().red())
+    bgColor.setGreen(artboard.backgroundColor().green())
+    bgColor.setBlue(artboard.backgroundColor().blue())
+    bgColor.setAlpha(artboard.backgroundColor().alpha())
 
-    var color = mask.style().fills().addNewStylePart().color()
-
-    color.setRed(artboard.backgroundColor().red());
-    color.setGreen(artboard.backgroundColor().green());
-    color.setBlue(artboard.backgroundColor().blue());
-
-    mask.frame().x = 0
-    mask.frame().y = 0
-
-    // Group the Mask
-    newGroup = MSLayerGroup.new();
-    newGroup.setName("screen")
-
-    mask.removeFromParent();
-    newGroup.addLayers([mask]);
-
+    var fill = MSStyleFill.alloc().init()
+    fill.color = bgColor
+    
+    var color = mask.styleGeneric().addStyleFill(fill)
+    
     // Move each layer into the Screen group
-    layersCount = layers.count()
-    for (var j = 0; j < layersCount; j++) {
-  	  var layer = layers.objectAtIndex(0)
-      layer.removeFromParent()
-      newGroup.addLayers([layer])
-
+    for (var j = 0; j < layers.count(); j++) {
+  	  var layer = layers.objectAtIndex(j)
+      newGroup.addLayer(layer)
     }
-    newGroup.removeFromParent()
-    artboard.parentGroup().addLayers([newGroup])
+
+    artboard.parentGroup().addLayer(newGroup)
     newGroup.frame().x = artboard.frame().x()
     newGroup.frame().y = artboard.frame().y()
-    artboard.removeFromParent();
-
-    //findLargestArtboard().addLayers([artboard])
+    artboard.removeFromParent()
+    
     mask.setHasClippingMask(true)
   }
+  // Clear all selections
+  var doc = context.document
+  doc.currentPage().deselectAllLayers()
 };
 
-function setSize(layer,width,height) {
-  var frame = layer.rect();
-  frame.size.width = width;
-  frame.size.height = height;
-  layer.rect = frame;
-}
-
-function findLargestArtboard() {
-
-}

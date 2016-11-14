@@ -7,24 +7,15 @@
       "shortcut" : "control alt command m",
       "name" : "Mask Artboards",
       "identifier" : "to mask"
-    },
-    {
-      "script" : "script.cocoascript",
-      "handler" : "duplicatePage",
-      "shortcut" : "control alt command d",
-      "name" : "Duplicate Page",
-      "identifier" : "duplicate page"
-    }
-  ],
+    }  ],
   "menu" : {
     "items" : [
-      "duplicate page",
       "to mask"
     ],
-    "title" : "Artboard to Mask"
+    "title" : "Artboards to Mask"
   },
   "identifier" : "com.csmeder.sketch.Artboards-to-Masks",
-  "version" : "1.0",
+  "version" : "1.1",
   "description" : "Converts artboards to a masked group of layers",
   "authorEmail" : "csmeder@gmail.com",
   "name" : "Artboards to Masks"
